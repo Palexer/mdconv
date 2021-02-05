@@ -18,7 +18,8 @@ import (
 
 func main() {
 	// get output file
-	outFileName := flag.String("o", "", "output file")
+	outFileName := flag.String("o", "", "output file (optional, default: HTML)")
+	cssPath := flag.String("s", "", "pathToCSSFile (optional)")
 	flag.Parse()
 
 	// get output file type
@@ -45,7 +46,7 @@ func main() {
 	// parse markdown
 	content := blackfriday.Run(file, blackfriday.WithRenderer(blackfriday.NewHTMLRenderer(blackfriday.HTMLRendererParameters{
 		Flags: blackfriday.CompletePage,
-		CSS:   "style.css",
+		CSS:   *cssPath,
 	})))
 
 	// embedd CSS in html file
