@@ -17,9 +17,8 @@ It is able to create PDF and HTML files from Markdown.
 
 ## ToDo
 
-- finish pdf support
-- finish style sheet
-- add testing
+- write style sheet specifications in a markdown file
+- add more testing
 
 ## License
 
