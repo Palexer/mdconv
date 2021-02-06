@@ -1,6 +1,27 @@
 package main 
 
 const style = `/* general */
+
+/* Note: Since webkit doesn't support @page, this will be ignored 
+   when converting to pdf using wkhtmltopdf. The page margins for pdfs are defined in mdconv.go 
+   @page defines the margins when printing through a web browser */
+@page {
+    margin-top: 2cm;
+    margin-bottom: 2cm;
+    margin-left: 2cm;
+    margin-right: 2cm;
+}
+
+/* page margins when viewing on a screen */
+@media screen {
+	html {
+	    margin-top: 2cm;
+        margin-bottom: 2cm;
+        margin-left: 2cm;
+        margin-right: 2cm;
+	}
+}
+
 html {
     font-size: 12pt;
     line-height: 1.5;
@@ -8,42 +29,42 @@ html {
     color: black;
     word-wrap: break-word;
     text-align: justify;
+	height: 297mm;
+    width: 210mm;
 }
 
 body {
-    width: 852px;
     margin: auto;
-    padding: 1.5cm;
 }
 
 /* headings */
 h1 {
     margin: 15px 0;
     padding-bottom: 2px;
-    font-size: 18pt;
+    font-size: 24pt;
     border-bottom: 1px solid #EEE;
 }
 
 h2 {
     margin: 20px 0 10px 0;
-    font-size: 16pt;
+    font-size: 22pt;
 }
 
 h3 {
     margin: 20px 0 10px 0;
     padding-bottom: 2px;
-    font-size: 15pt;
+    font-size: 18pt;
 }
 
 h4 {
-    font-size: 14pt;
+    font-size: 16pt;
     line-height: 26px;
     padding: 14px 0 4px;
     font-weight: bold;
 }
 
 h5 {
-    font-size: 13pt;
+    font-size: 14pt;
     line-height: 26px;
     padding: 14px 0 0;
     font-weight: bold;
@@ -51,11 +72,20 @@ h5 {
 
 
 h6 {
-    font-size: 12pt;
+    font-size: 13pt;
     line-height: 26px;
     padding: 18px 0 0;
     font-weight: normal;
-    font-variant: italic;
+    font-style: italic;
+}
+
+/* horizontal line */
+
+hr {
+	border: 0;
+	height: 0;
+	border-top: 1px solid rgba(0, 0, 0, 0.1);
+	border-bottom: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 br+br {
