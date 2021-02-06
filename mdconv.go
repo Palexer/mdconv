@@ -19,7 +19,8 @@ import (
 func main() {
 	// get output file
 	outFileName := flag.String("o", "", "output file (optional, default: HTML)")
-	cssPath := flag.String("s", "", "pathToCSSFile (optional)")
+	cssPath := flag.String("style", "", "pathToCSSFile (optional)")
+	overwrite := flag.Bool("overwrite", false, "")
 	flag.Parse()
 
 	// get output file type
@@ -49,10 +50,16 @@ func main() {
 		CSS:   *cssPath,
 	})))
 
-	// embedd CSS in html file
-	output := append([]byte("<style>\n"), []byte(style)...)
-	output = append(output, []byte("</style>\n")...)
-	output = append(output, content...)
+	// embedd CSS in html file (except if -overwrite flag was used)
+	var output []byte
+	if *overwrite {
+		output = content
+
+	} else {
+		output = append([]byte("<style>\n"), []byte(style)...)
+		output = append(output, []byte("</style>\n")...)
+		output = append(output, content...)
+	}
 
 	if pdf {
 		// create pdf output file
@@ -61,8 +68,14 @@ func main() {
 			log.Fatal("failed to convert html to pdf: ", err)
 		}
 
+		// define page options
 		pdfg.Dpi.Set(300)
 		pdfg.Orientation.Set(wkhtmltopdf.OrientationPortrait)
+		pdfg.PageSize.Set(wkhtmltopdf.PageSizeA4)
+		pdfg.MarginTop.Set(20)
+		pdfg.MarginBottom.Set(20)
+		pdfg.MarginLeft.Set(20)
+		pdfg.MarginRight.Set(20)
 
 		pdfg.AddPage(wkhtmltopdf.NewPageReader(bytes.NewReader(output)))
 
@@ -86,5 +99,4 @@ func main() {
 			log.Fatal("failed to copy content from tmpfile: ", err)
 		}
 	}
-
 }
