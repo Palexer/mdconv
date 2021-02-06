@@ -94,3 +94,9 @@ a simple image:
 a simple link:
 
 [Golang Homepage](https://golang.org/)
+
+## HTML inside of a Markdown document 
+
+<strong>This text should be bold</strong>
+<br>
+<a href="https://github.com">This should be a link to github.com</a>
