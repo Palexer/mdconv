@@ -16,12 +16,27 @@ import (
 // bundle css for styling files
 //go:generate go run script/bundlecss.go
 
+func getCustomCSS(path string) []byte {
+	if path == "" {
+		return []byte{}
+	}
+	file, err := ioutil.ReadFile(path)
+	if err != nil {
+		log.Fatal("failed to open custom css file: ", err.Error())
+	}
+	return file
+}
+
 func main() {
 	// get output file
 	outFileName := flag.String("o", "", "output file (optional, default: HTML)")
 	cssPath := flag.String("style", "", "pathToCSSFile (optional)")
-	overwrite := flag.Bool("overwrite", false, "")
+	overwrite := flag.Bool("overwrite", false, "(optional, overwrites default CSS stylesheet)")
 	flag.Parse()
+
+	if filepath.Ext(flag.Arg(0)) != ".md" {
+		log.Fatal("file type not supported: please use a .md input file")
+	}
 
 	// get output file type
 	var pdf bool
@@ -33,12 +48,13 @@ func main() {
 		log.Fatal("output file format not supported\nsupported formats: .pdf .html")
 	}
 
+	// default: HTML output
 	if *outFileName == "" {
 		*outFileName = strings.TrimSuffix(filepath.Base(flag.Arg(0)), filepath.Ext(flag.Arg(0)))
 		*outFileName = *outFileName + ".html"
 	}
 
-	// get input file
+	// read input file
 	file, err := ioutil.ReadFile(flag.Arg(0))
 	if err != nil {
 		log.Fatal("failed to open file: ", err)
@@ -47,16 +63,24 @@ func main() {
 	// parse markdown
 	content := blackfriday.Run(file, blackfriday.WithRenderer(blackfriday.NewHTMLRenderer(blackfriday.HTMLRendererParameters{
 		Flags: blackfriday.CompletePage,
-		CSS:   *cssPath,
 	})))
 
-	// embedd CSS in html file (except if -overwrite flag was used)
+	// bundle custom CSS provided by the user
+	customCSS := getCustomCSS(*cssPath)
+
+	// embedd CSS in html file
 	var output []byte
 	if *overwrite {
-		output = content
-
+		// overwrite: only include custom css
+		output = append([]byte("<style>\n"), customCSS...)
+		output = append(output, []byte("</style>\n")...)
+		output = append(output, content...)
 	} else {
+		// no overwrite: include default and custom css
 		output = append([]byte("<style>\n"), []byte(style)...)
+		output = append(output, []byte("</style>\n")...)
+		output = append(output, []byte("<style>\n")...)
+		output = append(output, customCSS...)
 		output = append(output, []byte("</style>\n")...)
 		output = append(output, content...)
 	}
