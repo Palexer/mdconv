@@ -3,7 +3,9 @@
 ## About
 
 MDConv is a markdown converter written in Go.
-It is able to create PDF and HTML files from Markdown without using LaTeX.
+It is able to create PDF and HTML files from Markdown without using LaTeX. 
+Instead MDConv uses the Blackfriday (v2) markdown processor and go-wkhtmltopdf to convert the HTML
+to PDF.
 
 ## Installation
 
@@ -25,6 +27,9 @@ It is able to create PDF and HTML files from Markdown without using LaTeX.
 
 ```mdconv -o output.pdf path/to/markdowndocument.md```
 
+_Note: The output file type is defined by the file extension of the output file
+specified with ```-o```._
+
 ### Flags
 
 |Flag|Description|
@@ -34,7 +39,7 @@ It is able to create PDF and HTML files from Markdown without using LaTeX.
 |-overwrite|If the -overwrite flag is parsed, the default stylesheet is not included in the output file.|
 |-help / -h|Get general usage inforamtion.|
 
-**Note: The path to the input file must be provided _after_ the flags are specified.**
+_Note: The path to the input file must be provided _after_ the flags are specified._
 
 ## Contributing
 
@@ -43,9 +48,9 @@ for things you might want to do.
 
 ## ToDo
 
-- write style sheet specifications in a markdown file
 - add more testing
-- don't link to custom CSS, instead include it too.
+- fix PDF output, if -overwrite flag is invoked (problem: overwrite still keeps the default stylesheet and adds the custom one
+to it (like -style without -overwrite))
 
 ## License
 
