@@ -12,16 +12,16 @@ buildall:
 
 	# compile for windows
 	go generate
-	GOOS=windows GOARCH=amd64 go build -o dist/win/mdconv-win-amd64.exe
+	GOOS=windows GOARCH=amd64 go build -o dist/win/win-amd64/mdconv.exe
 
 	# compile for mac/darwin
 	go generate
-	GOOS=darwin GOARCH=amd64 go build -o dist/darwin/mdconv-darwin-amd64	
+	GOOS=darwin GOARCH=amd64 go build -o dist/darwin/darwin-amd64/mdconv
 #	go generate
-#	GOOS=darwin GOARCH=arm64 go build -o dist/darwin/mdconv-darwin-arm64
+#	GOOS=darwin GOARCH=arm64 go build -o dist/darwin/darwin-arm64/mdconv
 
 	# compile for linux
 	go generate
-	GOOS=linux GOARCH=amd64 go build -o dist/linux/mdconv-linux-amd64
+	GOOS=linux GOARCH=amd64 go build -o dist/linux/linux-amd64/mdconv
 	go generate
-	GOOS=linux GOARCH=arm64 go build -o dist/linux/mdconv-linux-arm64
+	GOOS=linux GOARCH=arm64 go build -o dist/linux/linux-arm64/mdconv
