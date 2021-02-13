@@ -15,6 +15,10 @@ func main() {
 	}
 
 	file, err := os.Create("bundled.go")
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	_, err = file.Write([]byte("package main \n\nconst style = `"))
 	if err != nil {
 		log.Fatal(err)
