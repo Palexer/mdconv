@@ -1,4 +1,4 @@
-module github.com/Palexer/gfm-pdf
+module github.com/Palexer/mdconv
 
 go 1.15
 
