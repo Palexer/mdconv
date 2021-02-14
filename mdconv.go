@@ -3,8 +3,8 @@ package main
 import (
 	"bytes"
 	"flag"
+	"fmt"
 	"io/ioutil"
-	"log"
 	"os"
 	"path/filepath"
 	"strings"
@@ -16,26 +16,34 @@ import (
 // bundle css for styling files
 //go:generate go run script/bundlecss.go
 
+func printErrExit(a ...interface{}) {
+	fmt.Printf("mdconv: ")
+	fmt.Fprintln(os.Stderr, a...)
+	os.Exit(1)
+}
+
 func getCustomCSS(path string) []byte {
 	if path == "" {
 		return []byte{}
 	}
 	file, err := ioutil.ReadFile(path)
 	if err != nil {
-		log.Fatal("failed to open custom css file: ", err.Error())
+		printErrExit("failed to open custom css file: ", err.Error())
 	}
 	return file
 }
 
 func main() {
-	// get output file
+	// define flags
 	outFileName := flag.String("o", "", "output file (optional, default: HTML)")
 	cssPath := flag.String("style", "", "pathToCSSFile (optional)")
 	overwrite := flag.Bool("overwrite", false, "(optional, overwrites default CSS stylesheet)")
 	flag.Parse()
 
-	if filepath.Ext(flag.Arg(0)) != ".md" {
-		log.Fatal("file type not supported: please use a .md input file")
+	// get the input file
+	input := flag.Arg(1)
+	if filepath.Ext(input) != ".md" {
+		printErrExit("error (wrong input file): file type not supported (please use a .md input file) or file not found")
 	}
 
 	// get output file type
@@ -45,19 +53,19 @@ func main() {
 	} else if filepath.Ext(*outFileName) == ".html" || *outFileName == "" {
 		pdf = false
 	} else {
-		log.Fatal("output file format not supported\nsupported formats: .pdf .html")
+		printErrExit("error (wrong output file format): format not supported\nsupported formats: .pdf .html")
 	}
 
 	// default: HTML output
 	if *outFileName == "" {
-		*outFileName = strings.TrimSuffix(filepath.Base(flag.Arg(0)), filepath.Ext(flag.Arg(0)))
+		*outFileName = strings.TrimSuffix(filepath.Base(input), filepath.Ext(input))
 		*outFileName = *outFileName + ".html"
 	}
 
 	// read input file
-	file, err := ioutil.ReadFile(flag.Arg(0))
+	file, err := ioutil.ReadFile(input)
 	if err != nil {
-		log.Fatal("failed to open file: ", err)
+		printErrExit("error: failed to open file: ")
 	}
 
 	// parse markdown
@@ -89,7 +97,7 @@ func main() {
 		// create pdf output file
 		pdfg, err := wkhtmltopdf.NewPDFGenerator()
 		if err != nil {
-			log.Fatal("failed to convert html to pdf: ", err)
+			printErrExit("error: failed to convert html to pdf: ", err)
 		}
 
 		// define page options
@@ -104,23 +112,23 @@ func main() {
 		pdfg.AddPage(wkhtmltopdf.NewPageReader(bytes.NewReader(output)))
 
 		if err := pdfg.Create(); err != nil {
-			log.Fatal("failed to create pdf in internal buffer: ", err)
+			printErrExit("error: failed to create pdf in internal buffer: ", err)
 		}
 
 		// write pdf file to output path
 		if err := pdfg.WriteFile(*outFileName); err != nil {
-			log.Fatal("failed to write pdf file: ", err)
+			printErrExit("error: failed to write pdf file: ", err)
 		}
 
 	} else {
 		// create html output file
 		file, err := os.Create(*outFileName)
 		if err != nil {
-			log.Fatal("failed to create file: ", err)
+			printErrExit("error: failed to create HTML file: ", err)
 		}
 
 		if _, err := file.Write(output); err != nil {
-			log.Fatal("failed to copy content from tmpfile: ", err)
+			printErrExit("error: failed to write to HTML file: ", err)
 		}
 	}
 }
