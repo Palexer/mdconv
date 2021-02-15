@@ -18,5 +18,10 @@ if [ ! -d "test_output" ]; then mkdir test_output; fi
 ./mdconv -o test_output/overwrite_test.html -style testdata/custom.css -overwrite testdata/main_test.md
 ./mdconv -o test_output/overwrite_test.pdf -style testdata/custom.css -overwrite testdata/main_test.md
 
+# no style
+
+./mdconv -o test_output/nostyle_test.html -overwrite testdata/main_test.md
+./mdconv -o test_output/nostyle_test.pdf -overwrite testdata/main_test.md
+
 # remove binary
 rm mdconv
