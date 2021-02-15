@@ -9,12 +9,12 @@ to PDF.
 
 ## Installation
 
-1. Install [wkhtmltopdf](https://wkhtmltopdf.org/downloads.html)
-2. Download mdconv from the [releases section](https://github.com/Palexer/mdconv/releases)
+1. Install [wkhtmltopdf](https://wkhtmltopdf.org/downloads.html) for PDF conversions.
+2. Download mdconv from the [releases section](https://github.com/Palexer/mdconv/releases).
 
 ## Usage
 
-### General usage
+### General Usage
 
 **Convert a Markdown document to HTML:**
 
@@ -41,17 +41,16 @@ specified with ```-o```._
 
 _Note: The path to the input file must be provided _after_ the flags are specified._
 
+## Features
+
+- [x] HTML and PDF output 
+- [x] Standard Markdown features like headings, images, lists, code blocks, embedded HTML, tables, etc.
+- [x] Custom CSS stylesheet for output files
+
 ## Contributing
 
-Contributions of all kinds are very welcome. See the Github Issue Tracker or the ToDo below
-for things you might want to do.
-
-## ToDo
-
-- add more testing
-- fix PDF output, if -overwrite flag is invoked (problem: overwrite still keeps the default stylesheet and adds the custom one
-to it (like -style without -overwrite))
+Contributions of all kinds are very welcome. See the Github Issue Tracker for things you might want work on.
 
 ## License
 
-MIT License
+[MIT License](https://raw.githubusercontent.com/Palexer/mdconv/master/LICENSE)
