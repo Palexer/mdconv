@@ -41,7 +41,7 @@ func main() {
 	flag.Parse()
 
 	// get the input file
-	input := flag.Arg(1)
+	input := flag.Arg(0)
 	if filepath.Ext(input) != ".md" {
 		printErrExit("error (wrong input file): file type not supported (please use a .md input file) or file not found")
 	}
