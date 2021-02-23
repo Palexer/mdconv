@@ -1,0 +1,42 @@
+.TH mdconv "1"
+.SH NAME
+mdconv
+
+.SH DESCRIPTION
+
+.LP
+mdconv can be used to convert Markdown documents to PDF or HTML.
+
+.SH OVERVIEW
+.B mdconv 
+[OPTION]... [FILE]
+
+.SH OPTIONS
+.LP
+.B -o outputfile.ext
+
+.IP 
+Specify the output file name and file type. Replace 'ext' with either 'pdf' or 'html' to use the corresponding formats.
+
+.LP
+.B -c [FILE]
+
+.IP 
+Specify the path to a custom CSS style sheet 
+
+.LP
+.B -overwrite
+
+.IP 
+If the -overwrite flag is parsed, the default style sheet is not included in the output file.
+
+.LP
+.B -h, -help
+
+.IP 
+Get general usage information
+
+.SH AUTHOR
+.TP 2
+Palexer
+
