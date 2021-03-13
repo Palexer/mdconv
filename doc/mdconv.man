@@ -1,4 +1,4 @@
-.TH mdconv "1"
+.TH mdconv "1" "March 2021" "Palexer"
 .SH NAME
 mdconv
 
@@ -39,4 +39,3 @@ Get general usage information
 .SH AUTHOR
 .TP 2
 Palexer
-

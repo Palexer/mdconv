@@ -35,7 +35,7 @@ specified with ```-o```._
 |Flag|Description|
 |----|------|
 |-o out.pdf|You can specify an output file with either the .html or .pdf extension. If -o is not provided it defaults to the markdown file name and the .html file extension|
-|-style style.css|You can specify an additional stylesheet for your output file, which will be linked to in the HTML head.|
+|-c style.css|You can specify an additional stylesheet for your output file, which will be linked to in the HTML head.|
 |-overwrite|If the -overwrite flag is parsed, the default stylesheet is not included in the output file.|
 |-help / -h|Get general usage inforamtion.|
 

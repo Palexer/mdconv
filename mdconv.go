@@ -35,15 +35,15 @@ func getCustomCSS(path string) []byte {
 
 func main() {
 	// define flags
-	outFileName := flag.String("o", "", "output file (optional, default: HTML)")
-	cssPath := flag.String("style", "", "pathToCSSFile (optional)")
-	overwrite := flag.Bool("overwrite", false, "(optional, overwrites default CSS stylesheet)")
+	outFileName := flag.String("o", "", "output file, file extension is used to determine the output file type (default HTML)")
+	cssPath := flag.String("c", "", "path to custom CSS file")
+	overwrite := flag.Bool("overwrite", false, "overwrites default CSS stylesheet")
 	flag.Parse()
 
 	// get the input file
 	input := flag.Arg(0)
 	if filepath.Ext(input) != ".md" {
-		printErrExit("error (wrong input file): file type not supported (please use a .md input file) or file not found")
+		printErrExit("error (wrong input file): file type not supported (please use a .md input file) or file not found", "\nSee mdconv -h or man mdconvn for more information")
 	}
 
 	// get output file type
