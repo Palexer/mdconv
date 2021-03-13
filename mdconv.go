@@ -40,7 +40,14 @@ func main() {
 	outFileName := flag.String("o", "", "output file, file extension is used to determine the output file type (default HTML)")
 	cssPath := flag.String("c", "", "path to custom CSS file")
 	overwrite := flag.Bool("overwrite", false, "overwrites default CSS stylesheet")
+	versionShort := flag.Bool("V", false, "show currently used mdconv version")
+	versionLong := flag.Bool("version", false, "show currently used mdconv version")
 	flag.Parse()
+
+	if *versionShort || *versionLong {
+		fmt.Println("mdconv version 0.9")
+		os.Exit(0)
+	}
 
 	// get the input file
 	input := flag.Arg(0)

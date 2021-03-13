@@ -1,4 +1,4 @@
-.TH mdconv "1" "March 2021" "Palexer"
+.TH mdconv "1" "March 2021" "Palexer, Version 0.9"
 .SH NAME
 mdconv
 
