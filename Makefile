@@ -12,7 +12,38 @@ install:
 clean:
 	if [ -f "mdconv" ]; then rm mdconv; fi
 	if [ -d "dist" ]; then rm -r dist/; fi
-	if [ -d "test_output" ]; then rm -r test_output/; fi
+	if [ -d "testoutput" ]; then rm -r testoutput/; fi
+
+test: build
+	if [ ! -d "testoutput" ]; then mkdir testoutput; fi
+
+	# ususal pdf/html convertions
+	./mdconv -o testoutput/main_test.html testdata/main_test.md
+	./mdconv -o testoutput/main_test.pdf testdata/main_test.md
+
+testall: build
+	# create folder for output files
+	if [ ! -d "testoutput" ]; then mkdir testoutput; fi
+
+	# ususal pdf/html convertions
+	./mdconv -o testoutput/main_test.html testdata/main_test.md
+	./mdconv -o testoutput/main_test.pdf testdata/main_test.md
+
+	# custom and default CSS
+	./mdconv -o testoutput/custom_test.html -c testdata/custom.css testdata/main_test.md
+	./mdconv -o testoutput/custom_test.pdf -c testdata/custom.css testdata/main_test.md
+
+	# only custom CSS
+	./mdconv -o testoutput/overwrite_test.html -c testdata/custom.css -overwrite testdata/main_test.md
+	./mdconv -o testoutput/overwrite_test.pdf -c testdata/custom.css -overwrite testdata/main_test.md
+
+	# no style
+
+	./mdconv -o testoutput/nostyle_test.html -overwrite testdata/main_test.md
+	./mdconv -o testoutput/nostyle_test.pdf -overwrite testdata/main_test.md
+
+	# remove binary
+	rm mdconv
 
 buildall:
 	# create directories
