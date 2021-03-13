@@ -1,6 +1,6 @@
 module github.com/Palexer/mdconv
 
-go 1.15
+go 1.16
 
 require (
 	github.com/SebastiaanKlippert/go-wkhtmltopdf v1.6.1

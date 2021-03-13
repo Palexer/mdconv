@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	_ "embed"
 	"flag"
 	"fmt"
 	"io/ioutil"
@@ -14,7 +15,8 @@ import (
 )
 
 // bundle css for styling files
-//go:generate go run script/bundlecss.go
+//go:embed "styles/gh.css"
+var style []byte
 
 func printErrExit(a ...interface{}) {
 	fmt.Printf("mdconv: ")
@@ -85,7 +87,7 @@ func main() {
 		output = append(output, content...)
 	} else {
 		// no overwrite: include default and custom css
-		output = append([]byte("<style>\n"), []byte(style)...)
+		output = append([]byte("<style>\n"), style...)
 		output = append(output, []byte("</style>\n")...)
 		output = append(output, []byte("<style>\n")...)
 		output = append(output, customCSS...)
