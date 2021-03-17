@@ -46,10 +46,16 @@ _Note: The path to the input file must be provided _after_ the flags are specifi
 - [x] HTML and PDF output 
 - [x] Standard Markdown features like headings, images, lists, code blocks, embedded HTML, tables, etc.
 - [x] Custom CSS stylesheet for output files
+- [x] Github-like default stylesheet
 
 ## Contributing
 
 Contributions of all kinds are very welcome. See the Github Issue Tracker for things you might want work on.
+
+## ToDo
+
+- add TOC support
+- fix PDF background/border
 
 ## License
 
