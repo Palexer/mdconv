@@ -21,6 +21,8 @@ test: build
 	./mdconv -o testoutput/main_test.html testdata/main_test.md
 	./mdconv -o testoutput/main_test.pdf testdata/main_test.md
 
+	if [ -f "mdconv" ]; then rm mdconv; fi
+
 testall: build
 	# create folder for output files
 	if [ ! -d "testoutput" ]; then mkdir testoutput; fi
@@ -38,9 +40,13 @@ testall: build
 	./mdconv -o testoutput/overwrite_test.pdf -c testdata/custom.css -overwrite testdata/main_test.md
 
 	# no style
-
 	./mdconv -o testoutput/nostyle_test.html -overwrite testdata/main_test.md
 	./mdconv -o testoutput/nostyle_test.pdf -overwrite testdata/main_test.md
+
+	# custom fonts (only HTML tests)
+	./mdconv -f sans -o testoutput/font_sans.html testdata/main_test.md
+	./mdconv -f serif -o testoutput/font_serif.html testdata/main_test.md
+	./mdconv -f monospace -o testoutput/font_monospace.html testdata/main_test.md
 
 	# remove binary
 	rm mdconv

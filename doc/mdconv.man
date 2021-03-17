@@ -36,6 +36,12 @@ If the -overwrite flag is parsed, the default style sheet is not included in the
 .IP 
 Get general usage information
 
+.LP
+.B -f
+
+.IP
+Specify a font family (sans, serif, monospace) for the output document.
+
 .SH AUTHOR
 .TP 2
 Palexer

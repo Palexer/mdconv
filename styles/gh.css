@@ -17,22 +17,26 @@
         margin-bottom: 2cm;
         margin-left: 2cm;
         margin-right: 2cm;
+		background-color: #FFFFFF;
+		border: none;
 	}
 }
 
 html {
     font-size: 12pt;
     line-height: 1.5;
-    font-family: helvetica, arial, freesans, clean, sans-serif, Liberation Sans, Calibri;
     color: black;
     word-wrap: break-word;
     text-align: justify;
 	height: 297mm;
     width: 210mm;
+	background-color: #FFFFFF;
+	border: none;
 }
 
 body {
     margin: auto;
+	background-color: #FFFFFF;
 }
 
 /* headings */
