@@ -9,8 +9,17 @@ to PDF.
 
 ## Installation
 
+### Download
+
 1. Install [wkhtmltopdf](https://wkhtmltopdf.org/downloads.html) for PDF conversions.
 2. Download mdconv from the [releases section](https://github.com/Palexer/mdconv/releases).
+
+### Compile from source
+
+1. Clone this repository to your local machine
+2. Install the dependencies: go, wkhtmltopdf
+3. Run ```make``` followed by ```sudo make install```
+_Note: Run can also ```sudo make uninstall``` to remove the program_
 
 ## Usage
 
