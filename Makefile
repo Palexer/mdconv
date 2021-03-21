@@ -6,7 +6,7 @@ build:
 install:
 	sudo mkdir -p /usr/local/bin
 	sudo mkdir -p /usr/local/share/man/man1/
-	sudo cp doc/mdconv.man /usr/local/share/man/man1/mdconv.1
+	sudo cp doc/mdconv.1 /usr/local/share/man/man1/mdconv.1
 	sudo mv mdconv /usr/local/bin
 
 clean:
@@ -60,17 +60,24 @@ buildall:
 	mkdir -p dist/linux/arm64
 
 	# compile for windows
-	go generate
 	GOOS=windows GOARCH=amd64 go build -o dist/win/amd64/mdconv.exe
 
 	# compile for mac/darwin
-	go generate
 	GOOS=darwin GOARCH=amd64 go build -o dist/darwin/amd64/mdconv
-	go generate
 	GOOS=darwin GOARCH=arm64 go build -o dist/darwin/arm64/mdconv
 
 	# compile for linux
-	go generate
 	GOOS=linux GOARCH=amd64 go build -o dist/linux/amd64/mdconv
-	go generate
 	GOOS=linux GOARCH=arm64 go build -o dist/linux/arm64/mdconv
+
+	# zip binaries
+	# windows
+	zip -r dist/win/amd64/mdconv-win-amd64.zip dist/win/amd65/mdconv/exe doc/mdconv.1
+
+	# mac/darwin
+	zip -r dist/darwin/amd64/mdconv-darwin-amd64.zip dist/darwin/amd64/mdconv doc/mdconv.1
+	zip -r dist/darwin/arm64/mdconv-darwin-arm64.zip dist/darwin/arm64/mdconv doc/mdconv.1
+
+	# linux
+	zip -r dist/linux/amd64/mdconv-linux-amd64.zip dist/linux/amd64/mdconv doc/mdconv.1
+	zip -r dist/linux/arm64/mdconv-linux-arm64.zip dist/linux/arm64/mdconv doc/mdconv.1
