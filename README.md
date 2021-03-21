@@ -2,9 +2,9 @@
 
 ## About
 
-MDConv is a markdown converter written in Go.
+mdconv is a markdown converter written in Go.
 It is able to create PDF and HTML files from Markdown without using LaTeX. 
-Instead MDConv uses the Blackfriday (v2) markdown processor and go-wkhtmltopdf to convert the HTML
+Instead, mdconv uses the Blackfriday (v2) Markdown processor and go-wkhtmltopdf to convert the HTML
 to PDF.
 
 ## Installation
@@ -34,11 +34,12 @@ specified with ```-o```._
 
 |Flag|Description|
 |----|------|
-|-o out.pdf|You can specify an output file with either the .html or .pdf extension. If -o is not provided it defaults to the markdown file name and the .html file extension|
-|-c style.css|You can specify an additional stylesheet for your output file, which will be linked to in the HTML head.|
-|-overwrite|If the -overwrite flag is parsed, the default stylesheet is not included in the output file.|
-|-f sans|Specify a custom font family (sans, serif, monospace), default: sans|
-|-help / -h|Get general usage inforamtion.|
+|-o out.ext|Specify the output file name and file type|
+|-c [FILE]|Specify the path to a custom CSS style sheet|
+|-overwrite|Don't include the default style sheet|
+|-f [FONT]|Specify a font family (sans, serif, monospace)|
+|-h, -help|Get general usage information|
+|-v, -V|print currently used mdconv version|
 
 _Note: The path to the input file must be provided _after_ the flags are specified._
 
@@ -51,12 +52,7 @@ _Note: The path to the input file must be provided _after_ the flags are specifi
 
 ## Contributing
 
-Contributions of all kinds are very welcome. See the Github Issue Tracker for things you might want work on.
-
-## ToDo
-
-- add TOC support
-- fix PDF background/border
+Contributions of all kinds are very welcome. See the GitHub Issue Tracker for things you might want work on.
 
 ## License
 

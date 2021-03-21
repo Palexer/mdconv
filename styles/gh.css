@@ -17,8 +17,6 @@
         margin-bottom: 2cm;
         margin-left: 2cm;
         margin-right: 2cm;
-		background-color: #FFFFFF;
-		border: none;
 	}
 }
 
@@ -36,7 +34,6 @@ html {
 
 body {
     margin: auto;
-	background-color: #FFFFFF;
 }
 
 /* headings */

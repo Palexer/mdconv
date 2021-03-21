@@ -31,16 +31,23 @@ Specify the path to a custom CSS style sheet
 If the -overwrite flag is parsed, the default style sheet is not included in the output file.
 
 .LP
+.B -f [FONT]
+
+.IP
+Specify a font family (sans, serif, monospace) for the output document.
+
+.LP
+
 .B -h, -help
 
 .IP 
 Get general usage information
 
 .LP
-.B -f [FONT]
+.B -v, -V
 
 .IP
-Specify a font family (sans, serif, monospace) for the output document.
+Print currently used mdconv version
 
 .SH AUTHOR
 .TP 2
