@@ -37,7 +37,7 @@ If the -overwrite flag is parsed, the default style sheet is not included in the
 Get general usage information
 
 .LP
-.B -f
+.B -f [FONT]
 
 .IP
 Specify a font family (sans, serif, monospace) for the output document.
