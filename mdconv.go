@@ -5,7 +5,6 @@ import (
 	_ "embed"
 	"flag"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
@@ -39,7 +38,7 @@ func getCustomCSS(path string) []byte {
 	if path == "" {
 		return []byte{}
 	}
-	file, err := ioutil.ReadFile(path)
+	file, err := os.ReadFile(path)
 	if err != nil {
 		printErrExit("failed to open custom css file: ", err.Error())
 	}
@@ -97,7 +96,7 @@ func main() {
 	}
 
 	// read input file
-	file, err := ioutil.ReadFile(input)
+	file, err := os.ReadFile(input)
 	if err != nil {
 		printErrExit("error: failed to open file: ")
 	}
