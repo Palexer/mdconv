@@ -1,7 +1,6 @@
 .DEFAULT_GOAL := build
 build:
-	go generate
-	go build -o mdconv
+	go build -o mdconv 
 
 install:
 	sudo mkdir -p /usr/local/bin
@@ -60,15 +59,15 @@ buildall:
 	mkdir -p dist/linux/arm64
 
 	# compile for windows
-	GOOS=windows GOARCH=amd64 go build -o dist/win/amd64/mdconv.exe
+	GOOS=windows GOARCH=amd64 go build -o dist/win/amd64/mdconv.exe -ldflags "-s -w"
 
 	# compile for mac/darwin
-	GOOS=darwin GOARCH=amd64 go build -o dist/darwin/amd64/mdconv
-	GOOS=darwin GOARCH=arm64 go build -o dist/darwin/arm64/mdconv
+	GOOS=darwin GOARCH=amd64 go build -o dist/darwin/amd64/mdconv -ldflags "-s -w"
+	GOOS=darwin GOARCH=arm64 go build -o dist/darwin/arm64/mdconv -ldflags "-s -w"
 
 	# compile for linux
-	GOOS=linux GOARCH=amd64 go build -o dist/linux/amd64/mdconv
-	GOOS=linux GOARCH=arm64 go build -o dist/linux/arm64/mdconv
+	GOOS=linux GOARCH=amd64 go build -o dist/linux/amd64/mdconv -ldflags "-s -w"
+	GOOS=linux GOARCH=arm64 go build -o dist/linux/arm64/mdconv -ldflags "-s -w"
 
 	# zip binaries
 	# windows
