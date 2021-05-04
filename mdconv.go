@@ -29,7 +29,7 @@ var fontSansSerif string
 const version = "0.9"
 
 func printErrExit(a ...interface{}) {
-	fmt.Printf("mdconv: ")
+	fmt.Fprintf(os.Stderr, "mdconv: ")
 	fmt.Fprintln(os.Stderr, a...)
 	os.Exit(1)
 }
