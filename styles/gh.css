@@ -118,6 +118,7 @@ pre {
     padding: 6px 10px;
     border-radius: 3px;
     color: black;
+	font-family: 'Courier New', 'Courier', monospace;
 }
 
 code {
@@ -128,6 +129,7 @@ code {
     background-color: #F8F8F8;
     border-radius: 3px;
     font-size: 12px !important;
+	font-family: 'Courier New', 'Courier', monospace;
 }
 
 pre>code {
@@ -137,6 +139,7 @@ pre>code {
     border: none;
     background-color: transparent;
     border-radius: 0;
+	font-family: 'Courier New', 'Courier', monospace;
 }
 
 a,
