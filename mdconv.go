@@ -53,6 +53,10 @@ func main() {
 	overwrite := flag.Bool("overwrite", false, "overwrites default CSS stylesheet")
 	versionShort := flag.Bool("V", false, "show currently used mdconv version")
 	versionLong := flag.Bool("version", false, "show currently used mdconv version")
+	marginLeft := flag.Int("ml", -1, "specify a left magin in mm")
+	marginRight := flag.Int("mr", -1, "specify a right magin in mm")
+	marginTop := flag.Int("mt", -1, "specify a top magin in mm")
+	marginBottom := flag.Int("mb", -1, "specify a bottom magin in mm")
 	flag.Parse()
 
 	if *versionShort || *versionLong {
@@ -132,10 +136,29 @@ func main() {
 		pdfg.Dpi.Set(300)
 		pdfg.Orientation.Set(wkhtmltopdf.OrientationPortrait)
 		pdfg.PageSize.Set(wkhtmltopdf.PageSizeA4)
+
+		// set default page margins
 		pdfg.MarginTop.Set(20)
 		pdfg.MarginBottom.Set(20)
-		pdfg.MarginLeft.Set(20)
+		pdfg.MarginLeft.Set(5)
 		pdfg.MarginRight.Set(20)
+
+		// set parsed page margins
+		if *marginLeft > -1 {
+			pdfg.MarginLeft.Set(uint(*marginLeft))
+		}
+
+		if *marginRight > -1 {
+			pdfg.MarginRight.Set(uint(*marginRight))
+		}
+
+		if *marginTop > -1 {
+			pdfg.MarginTop.Set(uint(*marginTop))
+		}
+
+		if *marginBottom > -1 {
+			pdfg.MarginBottom.Set(uint(*marginBottom))
+		}
 
 		pdfg.AddPage(wkhtmltopdf.NewPageReader(bytes.NewReader(output)))
 
