@@ -53,10 +53,10 @@ func main() {
 	overwrite := flag.Bool("overwrite", false, "overwrites default CSS stylesheet")
 	versionShort := flag.Bool("V", false, "show currently used mdconv version")
 	versionLong := flag.Bool("version", false, "show currently used mdconv version")
-	marginLeft := flag.Int("ml", -1, "specify a left magin in mm")
-	marginRight := flag.Int("mr", -1, "specify a right magin in mm")
-	marginTop := flag.Int("mt", -1, "specify a top magin in mm")
-	marginBottom := flag.Int("mb", -1, "specify a bottom magin in mm")
+	marginLeft := flag.Int("margin-left", -1, "specify a left margin in mm")
+	marginRight := flag.Int("margin-right", -1, "specify a right margin in mm")
+	marginTop := flag.Int("margin-top", -1, "specify a top margin in mm")
+	marginBottom := flag.Int("margin-bottom", -1, "specify a bottom margin in mm")
 	flag.Parse()
 
 	if *versionShort || *versionLong {
@@ -113,14 +113,14 @@ func main() {
 	// bundle custom CSS provided by the user
 	customCSS := getCustomCSS(*cssPath)
 
-	// embedd CSS in html file
+	// embed CSS in html file
 	var output []byte
 	if *overwrite {
-		// overwrite: only include custom css
+		// overwrite: only include custom CSS
 		css := []byte(fmt.Sprintf("<style>\n%s\n</style>", string(customCSS)))
 		output = append(css, content...)
 	} else {
-		// no overwrite: include default and custom css
+		// no overwrite: include default and custom CSS
 		css := []byte(fmt.Sprintf("<style>\n%s\n%s\n</style>\n\n<style>%s</style>\n", fontStyle, style, customCSS))
 		output = append(css, content...)
 	}
