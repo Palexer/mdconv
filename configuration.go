@@ -13,16 +13,23 @@ import (
 )
 
 const (
-	HTMLOrientationPortrait  = ""
-	HTMLOrientationLandscape = ""
-	HTMLSizeLetter           = ""
-	HTMLSizeLegal            = ""
-	HTMLSizeA1               = ""
-	HTMLSizeA2               = ""
-	HTMLSizeA3               = ""
-	HTMLSizeA4               = ""
-	HTMLSizeA5               = ""
-	HTMLSizeA6               = ""
+	HTMLSizeLetterPortrait = ""
+	HTMLSizeLegalPortrait  = ""
+	HTMLSizeA1Portrait     = ""
+	HTMLSizeA2Portrait     = ""
+	HTMLSizeA3Portrait     = ""
+	HTMLSizeA4Portrait     = ""
+	HTMLSizeA5Portrait     = ""
+	HTMLSizeA6Portrait     = ""
+
+	HTMLSizeLetterLandscape = ""
+	HTMLSizeLegalLandscape  = ""
+	HTMLSizeA1Landscape     = ""
+	HTMLSizeA2Landscape     = ""
+	HTMLSizeA3Landscape     = ""
+	HTMLSizeA4Landscape     = ""
+	HTMLSizeA5Landscape     = ""
+	HTMLSizeA6Landscape     = ""
 
 	FontSerif     = "html { font-family: Times New Roman, Times, serif, Georgia, Gramond; }"
 	FontSansSerif = "html { font-family: helvetica, arial, freesans, clean, sans-serif, Liberation Sans, Calibri; }"
@@ -32,12 +39,13 @@ const (
 type configuration struct {
 	inputfile           string
 	outputfile          string
-	csspath             string
+	customCSSPath       string
 	overwriteDefaultCSS bool
 
 	pdf bool
 
 	HTMLContent []byte
+	customCSS   []byte
 
 	fonttype    string
 	orientation string
@@ -47,6 +55,18 @@ type configuration struct {
 	marginRight  int
 	marginBottom int
 	marginLeft   int
+}
+
+func (c *configuration) getCustomCSS() {
+	if c.customCSSPath == "" {
+		return
+	}
+
+	var err error
+	c.customCSS, err = os.ReadFile(c.customCSSPath)
+	if err != nil {
+		printErrExit("failed to open custom CSS file: ", err.Error())
+	}
 }
 
 func (c *configuration) parseMDAndBundleStyles() {
@@ -62,19 +82,16 @@ func (c *configuration) parseMDAndBundleStyles() {
 	})))
 
 	// bundle custom CSS provided by the user
-	var customCSS []byte
-	if c.csspath != "" {
-		customCSS = getCustomCSS(c.csspath)
-	}
+	c.getCustomCSS()
 
 	// embed CSS in file
 	if c.overwriteDefaultCSS {
 		// overwrite: only include custom CSS
-		css := []byte(fmt.Sprintf("<style>\n%s\n</style>", string(customCSS)))
+		css := []byte(fmt.Sprintf("<style>\n%s\n</style>", string(c.customCSS)))
 		c.HTMLContent = append(css, content...)
 	} else {
 		// no overwrite: include default and custom CSS
-		css := []byte(fmt.Sprintf("<style>\n%s\n%s\n</style>\n\n<style>%s</style>\n", c.fonttype, style, customCSS))
+		css := []byte(fmt.Sprintf("<style>\n%s\n%s\n</style>\n\n<style>%s</style>\n", c.fonttype, style, c.customCSS))
 		c.HTMLContent = append(css, content...)
 	}
 
@@ -232,7 +249,7 @@ func createConfiguration() *configuration {
 	return &configuration{
 		inputfile:           input,
 		outputfile:          *outFileName,
-		csspath:             *cssPath,
+		customCSSPath:       *cssPath,
 		overwriteDefaultCSS: *overwrite,
 
 		pdf: pdf,

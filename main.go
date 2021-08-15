@@ -18,17 +18,6 @@ func printErrExit(a ...interface{}) {
 	os.Exit(1)
 }
 
-func getCustomCSS(path string) []byte {
-	if path == "" {
-		return []byte{}
-	}
-	file, err := os.ReadFile(path)
-	if err != nil {
-		printErrExit("failed to open custom css file: ", err.Error())
-	}
-	return file
-}
-
 func main() {
 	config := createConfiguration()
 	config.parseMDAndBundleStyles()
