@@ -1,7 +1,7 @@
 /* general */
 
 /* Note: Since webkit doesn't support @page, this will be ignored 
-   when converting to pdf using wkhtmltopdf. The page margins for pdfs are defined in mdconv.go 
+   when converting to pdf using wkhtmltopdf. The page margins for pdfs are defined in configuration.go
    @page defines the margins when printing through a web browser */
 @page {
     margin-top: 2cm;
