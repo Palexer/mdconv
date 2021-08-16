@@ -2,7 +2,7 @@
 build:
 	@go build -ldflags "-s -w" -o mdconv 
 
-install:
+install: build
 	@sudo mkdir -p /usr/local/bin
 	@sudo mkdir -p /usr/local/share/man/man1/
 	@sudo cp doc/mdconv.1 /usr/local/share/man/man1/mdconv.1
@@ -23,30 +23,45 @@ test: build
 	@if [ -f "mdconv" ]; then rm mdconv; fi
 
 testall: build
+	# create folders
 	@echo create folder for output files
-	@if [ ! -d "testoutput" ]; then mkdir testoutput; fi
+	@mkdir -p testoutput/html
+	@mkdir -p testoutput/pdf
 
-	@echo ususal pdf/html convertions
-	@./mdconv -o testoutput/main_test.html testdata/main_test.md
-	@./mdconv -o testoutput/main_test.pdf testdata/main_test.md
+	# HTML
+	@echo HTML tests
 
-	@echo custom and default CSS
-	@./mdconv -o testoutput/custom_test.html -c testdata/custom.css testdata/main_test.md
-	@./mdconv -o testoutput/custom_test.pdf -c testdata/custom.css testdata/main_test.md
+	# main test
+	@./mdconv -o testoutput/html/main_test.html testdata/main_test.md
+	# custom and default CSS
+	@./mdconv -o testoutput/html/custom_test.html -c testdata/custom.css testdata/main_test.md
+	# only custom CSS
+	@./mdconv -o testoutput/html/overwrite_test.html -c testdata/custom.css -overwrite testdata/main_test.md
+	# no style
+	@./mdconv -o testoutput/html/nostyle_test.html -overwrite testdata/main_test.md
+	# custom fonts
+	@./mdconv -f sans -o testoutput/html/font_sans.html testdata/main_test.md
+	@./mdconv -f serif -o testoutput/html/font_serif.html testdata/main_test.md
+	@./mdconv -f monospace -o testoutput/html/font_monospace.html testdata/main_test.md
 
-	@echo only custom CSS
-	@./mdconv -o testoutput/overwrite_test.html -c testdata/custom.css -overwrite testdata/main_test.md
-	@./mdconv -o testoutput/overwrite_test.pdf -c testdata/custom.css -overwrite testdata/main_test.md
+	# PDF
+	@echo PDF tests
 
-	@echo no style
-	@./mdconv -o testoutput/nostyle_test.html -overwrite testdata/main_test.md
-	@./mdconv -o testoutput/nostyle_test.pdf -overwrite testdata/main_test.md
+	# main test
+	@./mdconv -o testoutput/pdf/main_test.pdf testdata/main_test.md
+	# custom and default CSS
+	@./mdconv -o testoutput/pdf/custom_test.pdf -c testdata/custom.css testdata/main_test.md
+	# only custom CSS
+	@./mdconv -o testoutput/pdf/overwrite_test.pdf -c testdata/custom.css -overwrite testdata/main_test.md
+	# no style
+	@./mdconv -o testoutput/pdf/nostyle_test.pdf -overwrite testdata/main_test.md
+	# custom fonts
+	@./mdconv -f sans -o testoutput/pdf/font_sans.pdf testdata/main_test.md
+	@./mdconv -f serif -o testoutput/pdf/font_serif.pdf testdata/main_test.md
+	@./mdconv -f monospace -o testoutput/pdf/font_monospace.pdf testdata/main_test.md
 
-	@echo custom font: only HTML tests
-	@./mdconv -f sans -o testoutput/font_sans.html testdata/main_test.md
-	@./mdconv -f serif -o testoutput/font_serif.html testdata/main_test.md
-	@./mdconv -f monospace -o testoutput/font_monospace.html testdata/main_test.md
 
+	# remove binary
 	@echo removing binary
 	@rm mdconv
 
