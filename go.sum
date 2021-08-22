@@ -1,6 +1,4 @@
-github.com/SebastiaanKlippert/go-wkhtmltopdf v1.6.1 h1:Arp9w1xMGfnYFQH8don5x7b9oPQWQrUcpFquvBCFvlU=
-github.com/SebastiaanKlippert/go-wkhtmltopdf v1.6.1/go.mod h1:zRBvVJtIfhaWvQ9lPIkXrtona4qqSmjZ1HfKvq4dQzI=
-github.com/SebastiaanKlippert/go-wkhtmltopdf v1.7.0 h1:N7toG6+71exXk3KRtyD5gtd0S6Tpf43P9G3cZx6RAkQ=
-github.com/SebastiaanKlippert/go-wkhtmltopdf v1.7.0/go.mod h1:zRBvVJtIfhaWvQ9lPIkXrtona4qqSmjZ1HfKvq4dQzI=
+github.com/adrg/go-wkhtmltopdf v0.2.2 h1:wWtR9L6WlvJR1A8p+OneydL7WzpVGCe+QeCtK+3n8n8=
+github.com/adrg/go-wkhtmltopdf v0.2.2/go.mod h1:PabO59E2w5GMKC8apqcXmf5rZZmiydIP3H1Wb4Uox6I=
 github.com/russross/blackfriday/v2 v2.1.0 h1:JIOH55/0cWyOuilr9/qlrm0BSXldqnqwMsf35Ld67mk=
 github.com/russross/blackfriday/v2 v2.1.0/go.mod h1:+Rmxgy9KzJVeS9/2gXHxylqXiyQDYRxCVz55jmeOWTM=

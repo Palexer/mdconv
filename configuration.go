@@ -8,32 +8,26 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/SebastiaanKlippert/go-wkhtmltopdf"
+	pdf "github.com/adrg/go-wkhtmltopdf"
 	"github.com/russross/blackfriday/v2"
 )
 
-const (
-	HTMLSizeLetterPortrait = ""
-	HTMLSizeLegalPortrait  = ""
-	HTMLSizeA1Portrait     = ""
-	HTMLSizeA2Portrait     = ""
-	HTMLSizeA3Portrait     = ""
-	HTMLSizeA4Portrait     = ""
-	HTMLSizeA5Portrait     = ""
-	HTMLSizeA6Portrait     = ""
+// page size options, height and width in mm
+type pageSize struct {
+	height int
+	width  int
+}
 
-	HTMLSizeLetterLandscape = ""
-	HTMLSizeLegalLandscape  = ""
-	HTMLSizeA1Landscape     = ""
-	HTMLSizeA2Landscape     = ""
-	HTMLSizeA3Landscape     = ""
-	HTMLSizeA4Landscape     = ""
-	HTMLSizeA5Landscape     = ""
-	HTMLSizeA6Landscape     = ""
-
-	FontSerif     = "html { font-family: Times New Roman, Times, serif, Georgia, Gramond; }"
-	FontSansSerif = "html { font-family: helvetica, arial, freesans, clean, sans-serif, Liberation Sans, Calibri; }"
-	FontMonospace = "html {	font-family: monospace, Courier New, Lucida Console, Monaco; } "
+// switch width and height to get landscape options in HTML document
+var (
+	HTMLSizeLetterPortrait = pageSize{height: 279, width: 216}
+	HTMLSizeLegalPortrait  = pageSize{height: 356, width: 216}
+	HTMLSizeA1Portrait     = pageSize{height: 841, width: 594}
+	HTMLSizeA2Portrait     = pageSize{height: 594, width: 420}
+	HTMLSizeA3Portrait     = pageSize{height: 420, width: 297}
+	HTMLSizeA4Portrait     = pageSize{height: 297, width: 210}
+	HTMLSizeA5Portrait     = pageSize{height: 210, width: 148}
+	HTMLSizeA6Portrait     = pageSize{height: 148, width: 105}
 )
 
 type configuration struct {
@@ -42,19 +36,28 @@ type configuration struct {
 	customCSSPath       string
 	overwriteDefaultCSS bool
 
+	// output to PDF
 	pdf bool
 
+	// actual content
 	HTMLContent []byte
-	customCSS   []byte
 
-	fonttype    string
+	customCSS []byte
+
+	// margins
+	marginTop    uint
+	marginRight  uint
+	marginBottom uint
+	marginLeft   uint
+
+	dpi       uint64
+	title     string
+	grayscale bool
+
+	// CSS strings
+	margins     string
 	orientation string
 	size        string
-
-	marginTop    int
-	marginRight  int
-	marginBottom int
-	marginLeft   int
 }
 
 func (c *configuration) getCustomCSS() {
@@ -90,8 +93,13 @@ func (c *configuration) parseMDAndBundleStyles() {
 		css := []byte(fmt.Sprintf("<style>\n%s\n</style>", string(c.customCSS)))
 		c.HTMLContent = append(css, content...)
 	} else {
-		// no overwrite: include default and custom CSS
-		css := []byte(fmt.Sprintf("<style>\n%s\n%s\n</style>\n\n<style>%s</style>\n", c.fonttype, style, c.customCSS))
+		// no overwrite: include default and custom CSS, don't include margins if it outputs to PDF
+		var css []byte
+		if c.pdf {
+			css = []byte(fmt.Sprintf("<style>\n%s\n</style>\n\n<style>%s</style>\n", GHStyle, c.customCSS))
+		} else {
+			css = []byte(fmt.Sprintf("<style>\n%s\n%s\n</style>\n\n<style>%s</style>\n", c.margins, GHStyle, c.customCSS))
+		}
 		c.HTMLContent = append(css, content...)
 	}
 
@@ -99,6 +107,47 @@ func (c *configuration) parseMDAndBundleStyles() {
 
 func (c *configuration) createHTMLFile() {
 	// create html output file
+
+	// page size
+	var width, height int
+
+	switch strings.ToLower(c.size) {
+	case "letter":
+		width = HTMLSizeLetterPortrait.width
+		height = HTMLSizeLetterPortrait.height
+	case "legal":
+		width = HTMLSizeLegalPortrait.width
+		height = HTMLSizeLegalPortrait.height
+	case "a1":
+		width = HTMLSizeA1Portrait.width
+		height = HTMLSizeA1Portrait.height
+	case "a2":
+		width = HTMLSizeA2Portrait.width
+		height = HTMLSizeA2Portrait.height
+	case "a3":
+		width = HTMLSizeA3Portrait.width
+		height = HTMLSizeA3Portrait.height
+	case "a4":
+		width = HTMLSizeA4Portrait.width
+		height = HTMLSizeA4Portrait.height
+	case "a5":
+		width = HTMLSizeA5Portrait.width
+		height = HTMLSizeA5Portrait.height
+	case "a6":
+		width = HTMLSizeA6Portrait.width
+		height = HTMLSizeA6Portrait.height
+	}
+
+	// switch width and height if the page is in landscape mode
+	if c.orientation == "landscape" {
+		tmp := width
+		width = height
+		height = tmp
+	}
+
+	sizeStr := fmt.Sprintf("<style>\n\thtml { width: %dmm; height: %dmm; }\n</style>", width, height)
+	c.HTMLContent = append([]byte(sizeStr), c.HTMLContent...)
+
 	file, err := os.Create(c.outputfile)
 	if err != nil {
 		printErrExit("error: failed to create HTML file: ", err)
@@ -111,79 +160,77 @@ func (c *configuration) createHTMLFile() {
 }
 
 func (c *configuration) createPDFFile() {
-	// create pdf output file
-	pdfg, err := wkhtmltopdf.NewPDFGenerator()
+	if err := pdf.Init(); err != nil {
+		printErrExit(err)
+	}
+	defer pdf.Destroy()
+
+	bytes.NewReader(c.HTMLContent)
+
+	obj, err := pdf.NewObjectFromReader(bytes.NewReader(c.HTMLContent))
 	if err != nil {
-		printErrExit("error: failed to convert html to pdf: ", err)
+		printErrExit(err)
 	}
 
-	// define page options
-	// DPI
-	pdfg.Dpi.Set(300)
+	obj.Footer.ContentCenter = "[page]"
+	obj.Footer.DisplaySeparator = true
 
-	// page orientation
-	switch strings.ToLower(c.orientation) {
-	case "portrait":
-		pdfg.Orientation.Set(wkhtmltopdf.OrientationPortrait)
-	case "landscape":
-		pdfg.Orientation.Set(wkhtmltopdf.OrientationLandscape)
+	converter, err := pdf.NewConverter()
+	if err != nil {
+		printErrExit(err)
+	}
+	defer converter.Destroy()
 
+	converter.Add(obj)
+
+	converter.MarginTop = fmt.Sprintf("%dmm", c.marginLeft)
+	converter.MarginRight = fmt.Sprintf("%dmm", c.marginRight)
+	converter.MarginBottom = fmt.Sprintf("%dmm", c.marginBottom)
+	converter.MarginLeft = fmt.Sprintf("%dmm", c.marginLeft)
+
+	converter.DPI = c.dpi
+	converter.Title = c.title
+
+	if c.grayscale {
+		converter.Colorspace = pdf.Grayscale
 	}
 
 	// page size
 	switch strings.ToLower(c.size) {
 	case "letter":
-		pdfg.PageSize.Set(wkhtmltopdf.PageSizeLetter)
+		converter.PaperSize = pdf.Letter
 	case "legal":
-		pdfg.PageSize.Set(wkhtmltopdf.PageSizeLegal)
+		converter.PaperSize = pdf.Legal
 	case "a1":
-		pdfg.PageSize.Set(wkhtmltopdf.PageSizeA1)
+		converter.PaperSize = pdf.A1
 	case "a2":
-		pdfg.PageSize.Set(wkhtmltopdf.PageSizeA2)
+		converter.PaperSize = pdf.A2
 	case "a3":
-		pdfg.PageSize.Set(wkhtmltopdf.PageSizeA3)
+		converter.PaperSize = pdf.A3
 	case "a4":
-		pdfg.PageSize.Set(wkhtmltopdf.PageSizeA4)
+		converter.PaperSize = pdf.A4
 	case "a5":
-		pdfg.PageSize.Set(wkhtmltopdf.PageSizeA5)
+		converter.PaperSize = pdf.A5
 	case "a6":
-		pdfg.PageSize.Set(wkhtmltopdf.PageSizeA6)
+		converter.PaperSize = pdf.A6
 	}
 
-	// set default page margins
-	pdfg.MarginTop.Set(20)
-	pdfg.MarginBottom.Set(20)
-	pdfg.MarginLeft.Set(5)
-	pdfg.MarginRight.Set(20)
-
-	// set parsed page margins
-	if c.marginLeft > -1 {
-		pdfg.MarginLeft.Set(uint(c.marginLeft))
+	switch strings.ToLower(c.orientation) {
+	case "portrait":
+		converter.Orientation = pdf.Portrait
+	case "landscape":
+		converter.Orientation = pdf.Landscape
 	}
 
-	if c.marginRight > -1 {
-		pdfg.MarginRight.Set(uint(c.marginRight))
+	file, err := os.Create(c.outputfile)
+	if err != nil {
+		printErrExit("failed to create output file: ", err)
 	}
+	defer file.Close()
 
-	if c.marginTop > -1 {
-		pdfg.MarginTop.Set(uint(c.marginTop))
+	if err := converter.Run(file); err != nil {
+		printErrExit("failed to write output file: ", err)
 	}
-
-	if c.marginBottom > -1 {
-		pdfg.MarginBottom.Set(uint(c.marginBottom))
-	}
-
-	pdfg.AddPage(wkhtmltopdf.NewPageReader(bytes.NewReader(c.HTMLContent)))
-
-	if err := pdfg.Create(); err != nil {
-		printErrExit("error: failed to create pdf in internal buffer: ", err)
-	}
-
-	// write pdf file to output path
-	if err := pdfg.WriteFile(c.outputfile); err != nil {
-		printErrExit("error: failed to write pdf file: ", err)
-	}
-
 }
 
 func createConfiguration() *configuration {
@@ -191,15 +238,17 @@ func createConfiguration() *configuration {
 	outFileName := flag.String("o", "", "Output file, file extension is used to determine the output file type (default HTML)")
 	cssPath := flag.String("c", "", "Specify path to custom CSS file")
 	overwrite := flag.Bool("overwrite", false, "Overwrite default CSS")
-	font := flag.String("f", "sans", "Specify the font for the output document (sans, serif, monospace)")
 
 	orientation := flag.String("orientation", "portrait", "PDF orientation (portrait (default) / landscape)")
-	pagesize := flag.String("pagesize", "A4", "The size of a PDF page (A4 (default), A5)")
+	size := flag.String("size", "A4", "The size of a PDF page (A4 (default), A5)")
+	dpi := flag.Uint64("dpi", 300, "Specify the DPI of the PDF file (e.g. 96; default: 300)")
+	title := flag.String("title", "", "Specify a title for the PDF document")
+	grayscale := flag.Bool("grayscale", false, "Choose whether the PDF file should be grayscale only (default: false)")
 
-	marginLeft := flag.Int("margin-left", -1, "Specify a left margin in mm")
-	marginRight := flag.Int("margin-right", -1, "Specify a right margin in mm")
-	marginTop := flag.Int("margin-top", -1, "Specify a top margin in mm")
-	marginBottom := flag.Int("margin-bottom", -1, "Specify a bottom margin in mm")
+	marginLeft := flag.Int("margin-left", 20, "Specify a left margin in mm")
+	marginRight := flag.Int("margin-right", 20, "Specify a right margin in mm")
+	marginTop := flag.Int("margin-top", 20, "Specify a top margin in mm")
+	marginBottom := flag.Int("margin-bottom", 20, "Specify a bottom margin in mm")
 
 	versionShort := flag.Bool("V", false, "Show currently used mdconv version")
 	versionLong := flag.Bool("version", false, "Show currently used mdconv version")
@@ -233,19 +282,6 @@ func createConfiguration() *configuration {
 		*outFileName = *outFileName + ".html"
 	}
 
-	// include correct font
-	var fontStyle string
-	switch strings.ToLower(*font) {
-	case "sans":
-		fontStyle = FontSansSerif
-	case "serif":
-		fontStyle = FontSerif
-	case "monospace":
-		fontStyle = FontMonospace
-	default:
-		printErrExit("font family not supported, see mdconv --help for more information")
-	}
-
 	return &configuration{
 		inputfile:           input,
 		outputfile:          *outFileName,
@@ -254,13 +290,18 @@ func createConfiguration() *configuration {
 
 		pdf: pdf,
 
-		fonttype:    fontStyle,
 		orientation: *orientation,
-		size:        *pagesize,
+		size:        *size,
+		dpi:         *dpi,
+		title:       *title,
+		grayscale:   *grayscale,
 
-		marginTop:    *marginTop,
-		marginRight:  *marginRight,
-		marginBottom: *marginBottom,
-		marginLeft:   *marginLeft,
+		marginTop:    uint(*marginTop),
+		marginRight:  uint(*marginRight),
+		marginBottom: uint(*marginBottom),
+		marginLeft:   uint(*marginLeft),
+		margins: fmt.Sprintf("@page { margin-top: %dmm; margin-right: %dmm; margin-bottom: %dmm; margin-left: %dmm; }\n @media screen { html {  margin-top: %dmm; margin-right: %dmm; margin-bottom: %dmm; margin-left: %dmm; } }",
+			*marginTop, *marginRight, *marginBottom, *marginLeft,
+			*marginTop, *marginRight, *marginBottom, *marginLeft),
 	}
 }
