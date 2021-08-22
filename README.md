@@ -1,10 +1,12 @@
-# mdconv
+# Mdconv
 
 ## About
 
-mdconv is a markdown converter written in Go.
-It is able to create PDF and HTML files from Markdown without using LaTeX. 
-Instead, mdconv uses the Blackfriday (v2) Markdown processor and go-wkhtmltopdf to convert the HTML
+Mdconv is a Markdown converter written in Go.
+The goal of this project is to create a Markdown to PDF converter, that doesn't need big dependencies like
+headless Chromium or LaTeX and is written in a compiled language, so that NodeJS is not necessary.
+It is able to create PDF and HTML files from Markdown without using LaTeX or any other big dependency. 
+Instead, mdconv uses the goldmark Markdown processor and relies on wkhtmltopdf (go-wkhtmltopdf) to convert the HTML
 to PDF.
 
 ## Installation
@@ -18,7 +20,8 @@ to PDF.
 
 1. Clone this repository to your local machine
 2. Install the dependencies: go, wkhtmltopdf
-3. Run ```make``` followed by ```sudo make install```
+3. Run ```sudo make install```
+
 _Note: Run can also ```sudo make uninstall``` to remove the program_
 
 ## Usage
@@ -37,31 +40,27 @@ _Note: Run can also ```sudo make uninstall``` to remove the program_
 ```mdconv -o output.pdf path/to/markdowndocument.md```
 
 _Note: The output file type is defined by the file extension of the output file
-specified with ```-o```._
+specified with ```-o```. Consequently you'll always have to use the ```-o``` flag to output to PDF_
 
-### Flags
-
-|Flag|Description|
-|----|------|
-|-o out.ext|Specify the output file name and file type|
-|-c [FILE]|Specify the path to a custom CSS style sheet|
-|-overwrite|Don't include the default style sheet|
-|-f [FONT]|Specify a font family (sans, serif, monospace)|
-|-h, -help|Get general usage information|
-|-v, -V|print currently used mdconv version|
-
-_Note: The path to the input file must be provided _after_ the flags are specified._
+For all available options see ```mdconv -h```
 
 ## Features
 
 - [x] HTML and PDF output 
-- [x] Standard Markdown features like headings, images, lists, code blocks, embedded HTML, tables, etc.
-- [x] Custom CSS stylesheet for output files
-- [x] Github-like default stylesheet
+- [x] standard Markdown features like headings, images, lists, code blocks, embedded HTML, tables, etc.
+- [x] custom CSS stylesheet for output files
+- [x] configurable via command line flags
+
+## ToDo
+
+- write more tests and test pagesize and orientation
+- PDF emoji support
+- more options as flags with new converter lib
+- correct display of checkboxes
 
 ## Contributing
 
-Contributions of all kinds are very welcome. See the GitHub Issue Tracker for things you might want work on.
+Contributions of all kinds are very welcome.
 
 ## License
 
