@@ -11,11 +11,13 @@ install: build
 clean:
 	@echo "cleaning"
 	@if [ -f "mdconv" ]; then rm mdconv; fi
+	@if [ -f "out.html" ]; then rm out.html; fi
+	@if [ -f "out.pdf" ]; then rm out.pdf; fi
 	@if [ -d "dist" ]; then rm -r dist/; fi
 	@if [ -d "testoutput" ]; then rm -r testoutput/; fi
 
 test: build
-	@if [ ! -d "testoutput" ]; then mkdir testoutput; fi
+	@mkdir -p testoutput
 
 	@./mdconv -o testoutput/main_test.html testdata/main_test.md
 	@./mdconv -o testoutput/main_test.pdf testdata/main_test.md
@@ -39,10 +41,6 @@ testall: build
 	@./mdconv -o testoutput/html/overwrite_test.html -c testdata/custom.css -overwrite testdata/main_test.md
 	# no style
 	@./mdconv -o testoutput/html/nostyle_test.html -overwrite testdata/main_test.md
-	# custom fonts
-	@./mdconv -f sans -o testoutput/html/font_sans.html testdata/main_test.md
-	@./mdconv -f serif -o testoutput/html/font_serif.html testdata/main_test.md
-	@./mdconv -f monospace -o testoutput/html/font_monospace.html testdata/main_test.md
 
 	# PDF
 	@echo PDF tests
@@ -55,11 +53,6 @@ testall: build
 	@./mdconv -o testoutput/pdf/overwrite_test.pdf -c testdata/custom.css -overwrite testdata/main_test.md
 	# no style
 	@./mdconv -o testoutput/pdf/nostyle_test.pdf -overwrite testdata/main_test.md
-	# custom fonts
-	@./mdconv -f sans -o testoutput/pdf/font_sans.pdf testdata/main_test.md
-	@./mdconv -f serif -o testoutput/pdf/font_serif.pdf testdata/main_test.md
-	@./mdconv -f monospace -o testoutput/pdf/font_monospace.pdf testdata/main_test.md
-
 
 	# remove binary
 	@echo removing binary
