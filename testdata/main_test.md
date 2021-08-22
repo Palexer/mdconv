@@ -101,6 +101,10 @@ a simple link:
 <br>
 <a href="https://github.com">This should be a link to github.com</a>
 
+## Emojis
+
+😀😂👍🤘
+
 # Some longer text
 
 ## Subheading One
