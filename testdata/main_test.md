@@ -34,6 +34,8 @@ _italic_
 2. Second
 3. Third
 
+- [ ] Checkbox1 (not filled)
+- [x] Checkbox2 (filled)
 
 ## Code
 
