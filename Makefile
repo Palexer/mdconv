@@ -36,9 +36,9 @@ testall: build
 	# main test
 	@./mdconv -o testoutput/html/main_test.html testdata/main_test.md
 	# custom and default CSS
-	@./mdconv -o testoutput/html/custom_test.html -c testdata/custom.css testdata/main_test.md
+	@./mdconv -o testoutput/html/custom_test.html -css testdata/custom.css testdata/main_test.md
 	# only custom CSS
-	@./mdconv -o testoutput/html/overwrite_test.html -c testdata/custom.css -overwrite testdata/main_test.md
+	@./mdconv -o testoutput/html/overwrite_test.html -css testdata/custom.css -overwrite testdata/main_test.md
 	# no style
 	@./mdconv -o testoutput/html/nostyle_test.html -overwrite testdata/main_test.md
 
@@ -48,9 +48,9 @@ testall: build
 	# main test
 	@./mdconv -o testoutput/pdf/main_test.pdf testdata/main_test.md
 	# custom and default CSS
-	@./mdconv -o testoutput/pdf/custom_test.pdf -c testdata/custom.css testdata/main_test.md
+	@./mdconv -o testoutput/pdf/custom_test.pdf -css testdata/custom.css testdata/main_test.md
 	# only custom CSS
-	@./mdconv -o testoutput/pdf/overwrite_test.pdf -c testdata/custom.css -overwrite testdata/main_test.md
+	@./mdconv -o testoutput/pdf/overwrite_test.pdf -css testdata/custom.css -overwrite testdata/main_test.md
 	# no style
 	@./mdconv -o testoutput/pdf/nostyle_test.pdf -overwrite testdata/main_test.md
 
