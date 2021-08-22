@@ -8,7 +8,7 @@ import (
 
 // bundle css for styling files
 //go:embed styles/gh.css
-var style string
+var GHStyle string
 
 const version = "0.95"
 
