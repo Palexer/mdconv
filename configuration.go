@@ -9,7 +9,11 @@ import (
 	"strings"
 
 	pdf "github.com/adrg/go-wkhtmltopdf"
-	"github.com/russross/blackfriday/v2"
+	"github.com/yuin/goldmark"
+	emoji "github.com/yuin/goldmark-emoji"
+	_ "github.com/yuin/goldmark-emoji/definition"
+	"github.com/yuin/goldmark/extension"
+	"github.com/yuin/goldmark/parser"
 )
 
 // page size options, height and width in mm
@@ -79,10 +83,15 @@ func (c *configuration) parseMDAndBundleStyles() {
 		printErrExit("error: failed to open file: ")
 	}
 
-	// parse markdown
-	content := blackfriday.Run(file, blackfriday.WithRenderer(blackfriday.NewHTMLRenderer(blackfriday.HTMLRendererParameters{
-		Flags: blackfriday.CompletePage,
-	})))
+	md := goldmark.New(
+		goldmark.WithExtensions(extension.GFM, emoji.Emoji),
+		goldmark.WithParserOptions(
+			parser.WithAutoHeadingID(),
+		),
+	)
+
+	var content bytes.Buffer
+	md.Convert(file, &content)
 
 	// bundle custom CSS provided by the user
 	c.getCustomCSS()
@@ -91,7 +100,7 @@ func (c *configuration) parseMDAndBundleStyles() {
 	if c.overwriteDefaultCSS {
 		// overwrite: only include custom CSS
 		css := []byte(fmt.Sprintf("<style>\n%s\n</style>", string(c.customCSS)))
-		c.HTMLContent = append(css, content...)
+		c.HTMLContent = append(css, content.Bytes()...)
 	} else {
 		// no overwrite: include default and custom CSS, don't include margins if it outputs to PDF
 		var css []byte
@@ -100,7 +109,7 @@ func (c *configuration) parseMDAndBundleStyles() {
 		} else {
 			css = []byte(fmt.Sprintf("<style>\n%s\n%s\n</style>\n\n<style>%s</style>\n", c.margins, GHStyle, c.customCSS))
 		}
-		c.HTMLContent = append(css, content...)
+		c.HTMLContent = append(css, content.Bytes()...)
 	}
 
 }
@@ -246,7 +255,7 @@ func createConfiguration() *configuration {
 	marginTop := flag.Int("margin-top", 20, "Specify a top margin in mm")
 	marginBottom := flag.Int("margin-bottom", 20, "Specify a bottom margin in mm")
 
-	versionFlag := flag.Bool("-v", false, "Show currently used mdconv version")
+	versionFlag := flag.Bool("v", false, "Show currently used mdconv version")
 
 	flag.Parse()
 
