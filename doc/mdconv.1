@@ -1,4 +1,4 @@
-.TH mdconv "1" "March 2021" "Palexer, Version 0.9"
+.TH mdconv "1" "August 2021" "Palexer, Version 0.95"
 .SH NAME
 mdconv
 
@@ -9,7 +9,7 @@ mdconv can be used to convert Markdown documents to PDF or HTML.
 
 .SH OVERVIEW
 .B mdconv 
-[OPTION]... [FILE]
+[OPTIONS]... [FILE]
 
 .SH OPTIONS
 .LP
@@ -19,10 +19,10 @@ mdconv can be used to convert Markdown documents to PDF or HTML.
 Specify the output file name and file type. Replace 'ext' with either 'pdf' or 'html' to use the corresponding formats.
 
 .LP
-.B -c [FILE]
+.B -css [PATH]
 
 .IP 
-Specify the path to a custom CSS style sheet 
+Specify a custom CSS stylesheet.
 
 .LP
 .B -overwrite
@@ -31,17 +31,42 @@ Specify the path to a custom CSS style sheet
 If the -overwrite flag is parsed, the default style sheet is not included in the output file.
 
 .LP
-.B -f [FONT]
+.B -grayscale
 
 .IP
-Specify a font family (sans, serif, monospace) for the output document.
+Make the PDF output grayscale only
 
 .LP
-
 .B -h, -help
 
 .IP 
 Get general usage information
+
+.LP
+.B -margin-left [SIZE], -margin-right [SIZE], -margin-top [SIZE], -margin-bottom [SIZE]
+
+.IP
+Specify the margins of the page (left, right, top, bottom) in mm.
+
+.LP
+.B -dpi [VALUE]
+
+.IP
+Specify the DPI of the PDF document.
+
+.LP
+.B -size [VALUE]
+
+.IP
+Specify the size of the output document (default A4).
+Available options: letter, legal, a1, a2, a3, a4, a5, a6
+
+.LP
+.B -orientation [VALUE]
+
+.IP
+Specify the orientation of the output document (portrait (default) or landscape).
+
 
 .LP
 .B -v, -V
@@ -50,11 +75,7 @@ Get general usage information
 Print currently used mdconv version
 
 .LP
-.B -ml [SIZE], -mr [SIZE], -mt [SIZE], -mb [SIZE]
-
-.IP
-Specify the margins of the page (left, right, top, bottom). This only works with 
-PDF output files.
+See also 'mdconv -h' for more information.
 
 .SH AUTHOR
 .TP 2

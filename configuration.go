@@ -172,9 +172,6 @@ func (c *configuration) createPDFFile() {
 		printErrExit(err)
 	}
 
-	obj.Footer.ContentCenter = "[page]"
-	obj.Footer.DisplaySeparator = true
-
 	converter, err := pdf.NewConverter()
 	if err != nil {
 		printErrExit(err)
@@ -236,13 +233,12 @@ func (c *configuration) createPDFFile() {
 func createConfiguration() *configuration {
 	// define flags
 	outFileName := flag.String("o", "", "Output file, file extension is used to determine the output file type (default HTML)")
-	cssPath := flag.String("c", "", "Specify path to custom CSS file")
+	cssPath := flag.String("css", "", "Specify path to custom CSS file")
 	overwrite := flag.Bool("overwrite", false, "Overwrite default CSS")
 
 	orientation := flag.String("orientation", "portrait", "PDF orientation (portrait (default) / landscape)")
 	size := flag.String("size", "A4", "The size of a PDF page (A4 (default), A5)")
 	dpi := flag.Uint64("dpi", 300, "Specify the DPI of the PDF file (e.g. 96; default: 300)")
-	title := flag.String("title", "", "Specify a title for the PDF document")
 	grayscale := flag.Bool("grayscale", false, "Choose whether the PDF file should be grayscale only (default: false)")
 
 	marginLeft := flag.Int("margin-left", 20, "Specify a left margin in mm")
@@ -250,12 +246,11 @@ func createConfiguration() *configuration {
 	marginTop := flag.Int("margin-top", 20, "Specify a top margin in mm")
 	marginBottom := flag.Int("margin-bottom", 20, "Specify a bottom margin in mm")
 
-	versionShort := flag.Bool("V", false, "Show currently used mdconv version")
-	versionLong := flag.Bool("version", false, "Show currently used mdconv version")
+	versionFlag := flag.Bool("-v", false, "Show currently used mdconv version")
 
 	flag.Parse()
 
-	if *versionShort || *versionLong {
+	if *versionFlag {
 		fmt.Printf("mdconv version %s\n", version)
 		os.Exit(0)
 	}
@@ -263,7 +258,7 @@ func createConfiguration() *configuration {
 	// get the input file
 	input := flag.Arg(0)
 	if filepath.Ext(input) != ".md" {
-		printErrExit("error (wrong input file): file type not supported (please use a .md input file) or file not found", "\nSee mdconv -h or man mdconv for more information")
+		printErrExit("error: input file type not supported or file not found (please use a *.md file)", "\nSee 'mdconv -h' or 'man mdconv' for more information")
 	}
 
 	// get output file type
@@ -293,7 +288,6 @@ func createConfiguration() *configuration {
 		orientation: *orientation,
 		size:        *size,
 		dpi:         *dpi,
-		title:       *title,
 		grayscale:   *grayscale,
 
 		marginTop:    uint(*marginTop),
